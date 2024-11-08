@@ -1,37 +1,53 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-console */
 import React from 'react';
+import { Clock } from './components/Clock';
 import './App.scss';
 
-function getRandomName(): string {
-  const value = Date.now().toString().slice(-4);
-
-  return `Clock-${value}`;
+interface State {
+  hasClock: boolean;
+  clockName: string;
+  timerId: any;
 }
 
-export const App: React.FC = () => {
-  const today = new Date();
-  let clockName = 'Clock-0';
+export class App extends React.Component<{}, State> {
+  state: State = {
+    hasClock: true,
+    clockName: 'Clock-0',
+    timerId: 0,
+  };
 
-  // This code starts a timer
-  const timerId = window.setInterval(() => {
-    clockName = getRandomName();
-  }, 3300);
+  render() {
+    const { hasClock, clockName, timerId } = this.state;
 
-  // this code stops the timer
-  window.clearInterval(timerId);
+    // #region clicks
 
-  return (
-    <div className="App">
-      <h1>React clock</h1>
+    document.addEventListener('click', (event: MouseEvent) => {
+      event.preventDefault();
 
-      <div className="Clock">
-        <strong className="Clock__name">{clockName}</strong>
+      this.setState({ hasClock: true });
+    });
 
-        {' time is '}
+    document.addEventListener('contextmenu', (event: MouseEvent) => {
+      event.preventDefault();
 
-        <span className="Clock__time">
-          {today.toUTCString().slice(-12, -4)}
-        </span>
+      this.setState({ hasClock: false });
+    });
+
+    // #endregion
+
+    return (
+      <div className="App">
+        <h1>React clock</h1>
+
+        {hasClock && (
+          <Clock
+            clockName={clockName}
+            setState={value => this.setState(value)}
+            timerId={timerId}
+          />
+        )}
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
