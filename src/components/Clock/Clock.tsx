@@ -4,7 +4,6 @@ import React from 'react';
 
 interface Props {
   clockName: string;
-  setState: (arg: any) => void;
   timerId: any;
 }
 
@@ -17,21 +16,7 @@ export class Clock extends React.Component<Props, State> {
     today: new Date(),
   };
 
-  getRandomName = (): string => {
-    const value = Date.now().toString().slice(-4);
-
-    return `Clock-${value}`;
-  };
-
   componentDidMount(): void {
-    const { setState } = this.props;
-
-    setState({
-      timerId: window.setInterval(() => {
-        setState({ clockName: this.getRandomName() });
-      }, 3300),
-    });
-
     window.setInterval(() => {
       this.setState({ today: new Date() });
     }, 1000);
